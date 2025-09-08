@@ -32,7 +32,7 @@ For the full documentation, see the `oas.json` file. It contains the entire API 
 ### Interacting
 For `GET` requests, it's possible to simply use a web browser. With that said, the best way to interact with the API is to use a tool like *cURL* or *Postman*.
 
-#### cURL Commands (Windows)
+#### cURL Commands (Windows CMD)
 The following commands will let you interact with the API, and shows both the response header and body:
 * `GET` the API root:
     ```bash
