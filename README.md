@@ -27,7 +27,7 @@ There are 3 endpoints available:
     * `GET` lets you retrieve the employee.
     * `DELETE` lets you remove an employee. Returns `204 No Content` with no body if successful, as the resource URI is no longer valid.
 
-For the full documentation, see the `oas.json` file. It contains the entire API documentation in JSON, using the OpenAPI Specification.
+For the full documentation, see the `oas.json` file. It contains the entire API documentation in JSON, using the [OpenAPI Specification](https://swagger.io/specification/).
 
 ### Interacting
 For `GET` requests, it's possible to simply use a web browser. With that said, the best way to interact with the API is to use a tool like *cURL* or *Postman*.
