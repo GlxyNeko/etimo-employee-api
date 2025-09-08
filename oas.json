@@ -1,0 +1,268 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Employee HATEOAS API",
+    "description": "A RESTful API for managing employee records, built with Spring Boot and following HAL JSON HATEOAS principles.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Development server"
+    }
+  ],
+  "paths": {
+    "/api/v1": {
+      "get": {
+        "summary": "Get API Root",
+        "description": "Retrieves the root of the v1 API, providing navigational links to all available collections.",
+        "operationId": "getApiRoot",
+        "tags": [
+          "API Root"
+        ],
+        "responses": {
+          "200": {
+            "description": "The API's root links.",
+            "content": {
+              "application/hal+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiRootModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/employees": {
+      "get": {
+        "summary": "List all employees",
+        "operationId": "getAllEmployees",
+        "tags": [
+          "Employee"
+        ],
+        "responses": {
+          "200": {
+            "description": "A HAL-formatted collection of employees.",
+            "content": {
+              "application/hal+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeCollectionModel"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Add a new employee",
+        "operationId": "addEmployee",
+        "tags": [
+          "Employee"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewEmployee"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Employee created successfully.",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            },
+            "content": {
+              "application/hal+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeModel"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict. Email already exists.",
+            "content": {
+              "application/hal+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HalErrorModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/employees/{id}": {
+      "get": {
+        "summary": "Get an employee by ID",
+        "operationId": "getEmployeeById",
+        "tags": [
+          "Employee"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested employee resource.",
+            "content": {
+              "application/hal+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Employee not found.",
+            "content": {
+              "application/hal+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HalErrorModel"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove an employee",
+        "operationId": "removeEmployee",
+        "tags": [
+          "Employee"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Employee successfully deleted."
+          },
+          "404": {
+            "description": "Employee not found.",
+            "content": {
+              "application/hal+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HalErrorModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "NewEmployee": {
+        "type": "object",
+        "properties": {
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "email": { "type": "string", "format": "email" }
+        }
+      },
+      "Employee": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "email": { "type": "string", "format": "email" }
+        }
+      },
+      "Link": {
+        "type": "object",
+        "properties": { "href": { "type": "string", "format": "uri" } }
+      },
+      "EmployeeModel": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Employee" },
+          {
+            "type": "object",
+            "properties": {
+              "_links": {
+                "type": "object",
+                "properties": {
+                  "self": { "$ref": "#/components/schemas/Link" },
+                  "employees": { "$ref": "#/components/schemas/Link" }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "EmployeeCollectionModel": {
+        "type": "object",
+        "properties": {
+          "_embedded": {
+            "type": "object",
+            "properties": {
+              "employeeList": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/EmployeeModel" }
+              }
+            }
+          },
+          "_links": {
+            "type": "object",
+            "properties": {
+              "self": { "$ref": "#/components/schemas/Link" }
+            }
+          }
+        }
+      },
+      "ApiRootModel": {
+        "type": "object",
+        "properties": {
+          "_links": {
+            "type": "object",
+            "properties": {
+              "self": { "$ref": "#/components/schemas/Link" },
+              "employees": { "$ref": "#/components/schemas/Link" }
+            }
+          }
+        }
+      },
+      "HalErrorModel": {
+        "type": "object",
+        "properties": {
+          "error": { "type": "string" },
+          "_links": {
+            "type": "object",
+            "properties": {
+              "self": { "$ref": "#/components/schemas/Link" },
+              "employees": { "$ref": "#/components/schemas/Link" }
+            }
+          }
+        }
+      }
+    }
+  }
+}
