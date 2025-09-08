@@ -23,7 +23,8 @@ public class EmployeeInMemoryRepository implements EmployeeRepository {
                     employee.email()
             );
         }
-        return employees.put(newEmployee.id(), newEmployee);
+        employees.put(newEmployee.id(), newEmployee);
+        return newEmployee;
     }
 
     public Optional<Employee> findById(UUID id) {
