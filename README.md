@@ -32,20 +32,20 @@ For the full documentation, see the `oas.json` file. It contains the entire API 
 ### Interacting
 For `GET` requests, it's possible to simply use a web browser. With that said, the best way to interact with the API is to use a tool like *cURL* or *Postman*.
 
-#### cURL Commands (Windows CMD)
+#### cURL Commands
 The following commands will let you interact with the API, and shows both the response header and body:
 * `GET` the API root:
     ```bash
-    curl.exe -i "http://localhost:8080/api/v1"
+    curl -i "http://localhost:8080/api/v1"
 * `GET` all employees:
     ```bash
-    curl.exe -i "http://localhost:8080/api/v1/employees"
+    curl -i "http://localhost:8080/api/v1/employees"
 * `POST` to add a new employee (HTTP Code 409 if duplicate email exists):
     ```bash
-    curl.exe -i -X POST -H "Content-Type: application/json" -d "{\"firstName\": \"first name\", \"lastName\": \"last name\", \"email\": \"first@last.se\"}" "http://localhost:8080/api/v1/employees"
+    curl -i -X POST -H "Content-Type: application/json" -d "{\"firstName\": \"first name\", \"lastName\": \"last name\", \"email\": \"first@last.se\"}" "http://localhost:8080/api/v1/employees"
 * `GET` an employee (replace ID with the value returned from getting all employees, or adding a new employee)(HTTP Code 404 if employee doesn't exist):
     ```bash
-    curl.exe -i "http://localhost:8080/api/v1/employees/<ID>"
+    curl -i "http://localhost:8080/api/v1/employees/<ID>"
 * `DELETE` an employee (replace ID with the value returned from getting all employees, or adding a new employee)(HTTP Code 404 if employee doesn't exist):
     ```bash
-    curl.exxe -i -X DELETE "http://localhost:8080/api/v1/employees/<ID>"
+    curl -i -X DELETE "http://localhost:8080/api/v1/employees/<ID>"
