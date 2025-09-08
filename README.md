@@ -21,7 +21,7 @@ There are 3 endpoints available:
     * `GET` lets you retrieve all employees.
     * `POST` lets you add a new employee. The body takes JSON with the following format:
       ```json
-      { "firstName": <first name>, "lastName": <last name>, "email": <email> }
+      { "firstName": "first name", "lastName": "last name", "email": "email" }
 * `/api/v1/employees/{id}`
   * This endpoint lets you access a specific employee. `{id}` is a UUID that's generated for each added employee to mask their email from the URL for security reasons.
     * `GET` lets you retrieve the employee.
