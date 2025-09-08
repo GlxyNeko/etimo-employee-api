@@ -6,6 +6,7 @@ import com.etimo.etimo_employee_api.exception.EmailAlreadyExistsException;
 import com.etimo.etimo_employee_api.exception.EmployeeNotFoundException;
 import com.etimo.etimo_employee_api.model.Employee;
 import com.etimo.etimo_employee_api.repository.EmployeeRepository;
+import jakarta.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -43,7 +44,7 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<EntityModel<Employee>> addEmployee(@RequestBody Employee employee) {
+    public ResponseEntity<EntityModel<Employee>> addEmployee(@Valid @RequestBody Employee employee) {
         if (repository.existsByEmail(employee.email())) {
             throw new EmailAlreadyExistsException(employee.email());
         }

@@ -6,6 +6,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,6 +16,22 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<RepresentationModel<?>> handleValidationExceptions(MethodArgumentNotValidException exception, HttpServletRequest request) {
+        var errors = exception.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(fieldError -> new FieldErrorDetail(
+                        fieldError.getField(),
+                        fieldError.getDefaultMessage()
+                )).toList();
+        var errorResponse = new ValidationErrorResponse("Validation Error", errors);
+        RepresentationModel<?> errorModel = RepresentationModel.of(errorResponse);
+        errorModel.add(Link.of(request.getRequestURI()).withSelfRel());
+        errorModel.add(Link.of(ApiEndpoints.EMPLOYEES).withRel("employees"));
+        return ResponseEntity.badRequest().body(errorModel);
+    }
+
     @ResponseBody
     @ExceptionHandler(EmployeeNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
